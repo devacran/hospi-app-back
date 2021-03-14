@@ -17,6 +17,7 @@ class Patients {
     }
     return [];
   }
+
   async getPatient(id) {
     try {
       await this.db.connect();
@@ -37,18 +38,21 @@ class Patients {
     }
     return [];
   }
+
   async getVitalSigns(id) {
     try {
       await this.db.connect();
-      const patient = await this.db.query(
+      const vitalSigns = await this.db.query(
         `SELECT * FROM vital_signs WHERE patient_id = ${id}`
       );
-      return patient;
+      
+      return vitalSigns;
     } catch (e) {
       console.log(e);
     }
     return [];
   }
+
   async getPatientBill(id) {
     try {
       await this.db.connect();
@@ -75,6 +79,34 @@ class Patients {
     }
     return {};
   }
+
+  async createVitalSigns({patientId,glucoseLevel, temp, heartRate, bloodPressureD, bloodPressureS}){
+      try {
+        await this.db.connect();
+      const data = await this.db.query(`
+      INSERT INTO vital_signs (
+        patient_id,
+        glucose_level,
+        temp ,
+        heart_rate ,
+        blood_pressure_s ,
+        blood_pressure_d
+        )
+        VALUES(
+        ${patientId},
+        ${glucoseLevel},
+        ${temp},
+        ${heartRate},
+        ${bloodPressureS},
+        ${bloodPressureD}
+        )
+      `);
+       return data
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
 }
 
 module.exports = Patients;

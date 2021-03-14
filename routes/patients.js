@@ -28,8 +28,10 @@ function patientsApi(app) {
   router.get("/:patientId/vital-signs", async function (req, res, next) {
     try {
       const { patientId } = req.params;
-      const patients = await patientsService.getVitalSigns(patientId);
-      res.status(200).json({ data: patients });
+      const data = await patientsService.getVitalSigns(patientId);
+
+      console.log(data)
+      res.status(200).json({ data: data });
     } catch (e) {
       console.log(e);
     }
@@ -44,6 +46,19 @@ function patientsApi(app) {
     }
   });
 
+  router.post("/:patientId/vital-signs", async (req, res)=>{
+    const reqData = {
+        patientId: req.params.patientId,
+        glucoseLevel: req.query.glucoseLevel,
+        temp: req.query.temp,
+        heartRate: req.query.heartRate,
+        bloodPressureS: req.query.bloodPressureS,
+        bloodPressureD: req.query.bloodPressureD,
+    }
+    const {insertId} = await patientsService.createVitalSigns(reqData)
+   
+    res.status(200).json({vital_signs_id: insertId, status: "OK"})
+  })
   app.use("/api/patients", router);
 }
 
