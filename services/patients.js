@@ -43,7 +43,7 @@ class Patients {
     try {
       await this.db.connect();
       const vitalSigns = await this.db.query(
-        `SELECT * FROM vital_signs WHERE patient_id = ${id}`
+        `SELECT vital_signs_id as id, patient_id, glucose_level, temp, heart_rate, blood_pressure_s, blood_pressure_d, created_at FROM vital_signs WHERE patient_id = ${id}`
       );
       
       return vitalSigns;

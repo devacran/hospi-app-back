@@ -29,9 +29,15 @@ function patientsApi(app) {
     try {
       const { patientId } = req.params;
       const data = await patientsService.getVitalSigns(patientId);
-
-      console.log(data)
-      res.status(200).json({ data: data });
+      
+      res.status(200).json(data.map(x=>{
+        const {id, patient_id, ...values} = x
+        return {
+          id,
+          patient_id,
+          data: values
+        }
+      }));
     } catch (e) {
       console.log(e);
     }
