@@ -43,7 +43,7 @@ class Patients {
     try {
       await this.db.connect();
       const vitalSigns = await this.db.query(
-        `SELECT vital_signs_id as id, patient_id, glucose_level, temp, heart_rate, blood_pressure_s, blood_pressure_d, created_at FROM vital_signs WHERE patient_id = ${id}`
+        `SELECT vital_signs_id as id, patient_id, glucose_level, temp, heart_rate, blood_pressure_s, blood_pressure_d, created_at FROM vital_signs WHERE patient_id = ${id} AND active = 1`
       );
       
       return vitalSigns;
@@ -82,7 +82,7 @@ class Patients {
 
   async createVitalSigns({patientId,glucoseLevel, temp, heartRate, bloodPressureD, bloodPressureS}){
       try {
-        await this.db.connect();
+      await this.db.connect();
       const data = await this.db.query(`
       INSERT INTO vital_signs (
         patient_id,
@@ -100,6 +100,41 @@ class Patients {
         ${bloodPressureS},
         ${bloodPressureD}
         )
+      `);
+       return data
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
+  async deleteVitalSigns({patientId, id}){
+      try {
+      await this.db.connect();
+      const data = await this.db.query(`
+      UPDATE vital_signs SET active = 0 WHERE vital_signs_id = ${id} AND patient_id = ${patientId} LIMIT 1;
+      `);
+       return data
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
+
+  async updateVitalSigns({id,patientId,glucoseLevel, temp, heartRate, bloodPressureD, bloodPressureS}){
+      try {
+      await this.db.connect();
+      const data = await this.db.query(`
+       UPDATE vital_signs SET
+        glucose_level = ${glucoseLevel},
+        temp = ${temp},
+        heart_rate = ${heartRate},
+        blood_pressure_s = ${bloodPressureS},
+        blood_pressure_d =  ${bloodPressureD}
+        WHERE
+        patient_id = ${patientId}
+        AND
+        vital_signs_id = ${id}
+        LIMIT 1
       `);
        return data
       } catch (error) {
