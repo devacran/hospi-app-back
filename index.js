@@ -6,7 +6,6 @@ const app = express();
 //Routes
 app.use(cors());
 patientsApi(app);
-
 app.listen(config.port, function () {
   console.log(`Listening on http://localhost:${config.port}`);
 });
