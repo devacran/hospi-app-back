@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.js",
+      "methods": ["POST", "GET", "PUT", "DELETE"],
+      "headers": {
+        "Access-Control-Allow-Origin": "_",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+        "Access-Control-Allow-Credentials": "true"
+      }
+    }
+  ],
+  "env": {
+    "PORT": "@port",
+    "DB_HOST": "@db-host",
+    "DB_PORT": "@db-port",
+    "DB_USER": "@db-user",
+    "DB_PASSWORD": "@db-password"
+  }
+}
