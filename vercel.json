@@ -20,9 +20,9 @@
   ],
   "env": {
     "PORT": "@port",
-    "DB_HOST": "@db-host",
-    "DB_PORT": "@db-port",
-    "DB_USER": "@db-user",
-    "DB_PASSWORD": "@db-password"
+    "DB_HOST": "@hospital-app-backend-db-host",
+    "DB_PORT": "@hospital-app-backend-db-port",
+    "DB_USER": "@hospital-app-backend-db-user",
+    "DB_PASSWORD": "@hospital-app-backend-db-password"
   }
 }
