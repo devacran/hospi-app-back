@@ -106,13 +106,13 @@ function patientsApi(app) {
   router.get("/:patientId/prescriptions", async function (req, res, next) {
     try {
       const { patientId } = req.params;
-      const reqData = {
-        patientId: req.params.patientId,
-        doctorId: "1",
-        medicineId: req.query.medicine_id,
-        frequency: req.query.frequency,
-        dosis: req.query.dosis,
-      };
+      // const reqData = {
+      //   patientId: req.params.patientId,
+      //   doctorId: "1",
+      //   medicineId: req.query.medicine_id,
+      //   frequency: req.query.frequency,
+      //   dosis: req.query.dosis,
+      // };
       const patients = await patientsService.getPatientBill(patientId);
       res.status(200).json({ data: patients });
     } catch (e) {
