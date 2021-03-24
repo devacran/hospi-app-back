@@ -45,7 +45,7 @@ class Patients {
       const vitalSigns = await this.db.query(
         `SELECT vital_signs_id as id, patient_id, glucose_level, temp, heart_rate, blood_pressure_s, blood_pressure_d, created_at FROM vital_signs WHERE patient_id = ${id} AND active = 1`
       );
-      
+
       return vitalSigns;
     } catch (e) {
       console.log(e);
@@ -80,8 +80,15 @@ class Patients {
     return {};
   }
 
-  async createVitalSigns({patientId,glucoseLevel, temp, heartRate, bloodPressureD, bloodPressureS}){
-      try {
+  async createVitalSigns({
+    patientId,
+    glucoseLevel,
+    temp,
+    heartRate,
+    bloodPressureD,
+    bloodPressureS,
+  }) {
+    try {
       await this.db.connect();
       const data = await this.db.query(`
       INSERT INTO vital_signs (
@@ -101,27 +108,34 @@ class Patients {
         ${bloodPressureD}
         )
       `);
-       return data
-      } catch (error) {
-        console.log(error)
-      }
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async deleteVitalSigns({patientId, id}){
-      try {
+  async deleteVitalSigns({ patientId, id }) {
+    try {
       await this.db.connect();
       const data = await this.db.query(`
       UPDATE vital_signs SET active = 0 WHERE vital_signs_id = ${id} AND patient_id = ${patientId} LIMIT 1;
       `);
-       return data
-      } catch (error) {
-        console.log(error)
-      }
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-
-  async updateVitalSigns({id,patientId,glucoseLevel, temp, heartRate, bloodPressureD, bloodPressureS}){
-      try {
+  async updateVitalSigns({
+    id,
+    patientId,
+    glucoseLevel,
+    temp,
+    heartRate,
+    bloodPressureD,
+    bloodPressureS,
+  }) {
+    try {
       await this.db.connect();
       const data = await this.db.query(`
        UPDATE vital_signs SET
@@ -136,12 +150,11 @@ class Patients {
         vital_signs_id = ${id}
         LIMIT 1
       `);
-       return data
-      } catch (error) {
-        console.log(error)
-      }
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   }
-
 }
 
 module.exports = Patients;

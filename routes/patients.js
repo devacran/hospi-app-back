@@ -82,8 +82,8 @@ function patientsApi(app) {
       glucoseLevel: req.query.glucose_level,
       temp: req.query.temp,
       heartRate: req.query.heart_rate,
-      bloodPressureS: req.query.blood_pressure_s,
-      bloodPressureD: req.query.blood_pressure_d,
+      bloodPressureS: req.query.blood_pressureS,
+      bloodPressureD: req.query.blood_pressureD,
     };
     const data = await patientsService.updateVitalSigns(reqData);
     if (data) {
