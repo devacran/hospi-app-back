@@ -46,6 +46,26 @@ function patientsApi(app) {
     }
   });
 
+  router.get("/:patientId/vital-signs-last", async function (req, res, next) {
+    try {
+      const { patientId } = req.params;
+      const data = await patientsService.getVitalSigns(patientId);
+
+      res.status(200).json(
+        data.map((x) => {
+          const { id, patient_id, ...values } = x;
+          return {
+            id,
+            patient_id,
+            data: values,
+          };
+        })[0]
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
   router.post("/:patientId/vital-signs", async (req, res) => {
     const reqData = {
       patientId: req.params.patientId,
@@ -106,15 +126,29 @@ function patientsApi(app) {
   router.get("/:patientId/prescriptions", async function (req, res, next) {
     try {
       const { patientId } = req.params;
-      // const reqData = {
-      //   patientId: req.params.patientId,
-      //   doctorId: "1",
-      //   medicineId: req.query.medicine_id,
-      //   frequency: req.query.frequency,
-      //   dosis: req.query.dosis,
-      // };
-      const patients = await patientsService.getPatientBill(patientId);
-      res.status(200).json({ data: patients });
+      const prescriptions = await patientsService.getPrescriptions(patientId);
+      res.status(200).json({ data: prescriptions });
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  router.post("/:patientId/prescriptions", async function (req, res, next) {
+    try {
+      const data = {
+        patientId: req.params.patientId,
+        doctorId: "1",
+        dosis: req.query.dosis,
+        frequency: req.query.frequency,
+        medicine_id: req.query.medicine_id,
+        via_admin: req.query.via_admin,
+      };
+      const response = await patientsService.addPrescription(data);
+      if (response) {
+        res.status(200).json({ id: response.insertId });
+      } else {
+        res.status(400).json({ status: "ERROR" });
+      }
     } catch (e) {
       console.log(e);
     }

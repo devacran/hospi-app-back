@@ -52,12 +52,25 @@ class Patients {
     }
     return [];
   }
+  async getVitalSignsLast(id) {
+    try {
+      await this.db.connect();
+      const vitalSigns = await this.db.query(
+        `SELECT vital_signs_id as id, patient_id, glucose_level, temp, heart_rate, blood_pressure_s, blood_pressure_d, created_at FROM vital_signs WHERE patient_id = ${id} AND active = 1 LIMIT 1`
+      );
+
+      return vitalSigns;
+    } catch (e) {
+      console.log(e);
+    }
+    return [];
+  }
 
   async getPatientBill(id) {
     try {
       await this.db.connect();
       const data = await this.db.query(`
-        SELECT a.bill_account_id, a.status, a.created_at, b.bill_charge_id, b.concept,b.amount, b.created_at as bill_charge_created_at
+        SELECT a.bill_account_id, a.status, a.created_at, b.bill_charge_id, b.concept, b.amount, b.created_at as bill_charge_created_at
         FROM bill_accounts AS a
         LEFT JOIN bill_charges AS b
         ON a.bill_account_id = b.bill_account_id
@@ -153,6 +166,44 @@ class Patients {
       return data;
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async getPrescriptions(patientId) {
+    try {
+      await this.db.connect();
+      const data = await this.db.query(`
+       SELECT 
+         a.prescription_id,
+         b.market_name,
+         b.compound,
+         b.concentration,
+         b.presentation,
+         a.dosis,
+         a.frequency,
+         a.updated_at
+       FROM prescriptions AS a 
+       LEFT JOIN medicines AS b
+       ON a.medicine_id = b.medicine_id
+       WHERE a.patient_id = ${patientId} AND a.active = 1
+      `);
+      return data;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  async addPrescription(data) {
+    try {
+      await this.db.connect();
+      const data = await this.db.query(`
+       INSERT INTO prescriptions  
+       (dosis, via_admin, frequency, medicine_id, patient_id, doctor_id)
+       VALUES(${data.dosis},${data.via_admin},${data.frequency}, ${data.medicine_id}, ${data.patient_id}, ${data.doctor_id} ) 
+       WHERE patient_id = ${data.patientId}
+      `);
+      return data;
+    } catch (e) {
+      console.log(e);
     }
   }
 }
