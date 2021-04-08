@@ -1,4 +1,3 @@
-const { query } = require("express");
 const DB = require("../lib/db");
 class Patients {
   constructor() {
@@ -56,7 +55,7 @@ class Patients {
     try {
       await this.db.connect();
       const vitalSigns = await this.db.query(
-        `SELECT vital_signs_id as id, patient_id, glucose_level, temp, heart_rate, blood_pressure_s, blood_pressure_d, created_at FROM vital_signs WHERE patient_id = ${id} AND active = 1 LIMIT 1`
+        `SELECT vital_signs_id as id, patient_id, glucose_level, temp, heart_rate, blood_pressure_s, blood_pressure_d, created_at FROM vital_signs WHERE patient_id = ${id} AND active = 1 ORDER BY vital_signs_id DESC LIMIT 1`
       );
 
       return vitalSigns;

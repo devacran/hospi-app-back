@@ -12,14 +12,30 @@ const io = socketio(server, {
     origin: "*",
   },
 });
+const DB = require("./lib/db");
 //Routes
 app.use(cors());
 patientsApi(app);
 
 io.on("connect", (socket) => {
-  setInterval(() => {
-    socket.emit("FromAPI", "HOLA");
-  }, 1000);
+  socket.on("suscribeVitalSigns", (dataFromFrontend) => {
+    console.log("suscribed");
+    let lastRegistry;
+    setInterval(async () => {
+      const patientId = dataFromFrontend.patientId;
+      try {
+        const data = await DB.query(
+          `SELECT vital_signs_id FROM vital_signs WHERE patient_id = ${patientId} AND active = 1 ORDER BY vital_signs_id DESC LIMIT 1`
+        );
+        if (lastRegistry !== data[0].vital_signs_id) {
+          lastRegistry = data[0].vital_signs_id;
+          socket.emit("VitalSignsChanged");
+        }
+      } catch (error) {
+        console.log("error con la query");
+      }
+    }, 5000);
+  });
 });
 
 server.listen(config.port, function () {

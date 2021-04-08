@@ -49,7 +49,7 @@ function patientsApi(app) {
   router.get("/:patientId/vital-signs-last", async function (req, res, next) {
     try {
       const { patientId } = req.params;
-      const data = await patientsService.getVitalSigns(patientId);
+      const data = await patientsService.getVitalSignsLast(patientId);
 
       res.status(200).json(
         data.map((x) => {
