@@ -194,13 +194,13 @@ class Patients {
   async addPrescription(data) {
     try {
       await this.db.connect();
-      const data = await this.db.query(`
-       INSERT INTO prescriptions  
-       (dosis, via_admin, frequency, medicine_id, patient_id, doctor_id)
-       VALUES(${data.dosis},${data.via_admin},${data.frequency}, ${data.medicine_id}, ${data.patient_id}, ${data.doctor_id} ) 
-       WHERE patient_id = ${data.patientId}
+
+      const response = await this.db.query(`
+       INSERT INTO prescriptions (dosis, via_admin, frequency, medicine_id, patient_id, doctor_id)
+       VALUES("${data.dosis}","${data.via_admin}","${data.frequency}",${data.medicine_id},${data.patientId},${data.doctorId})
       `);
-      return data;
+
+      return response;
     } catch (e) {
       console.log(e);
     }

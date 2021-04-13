@@ -1,5 +1,6 @@
 const express = require("express");
 const patientsApi = require("./routes/patients");
+const medicinesApi = require("./routes/medicines");
 const config = require("./config");
 const http = require("http");
 const cors = require("cors");
@@ -16,6 +17,7 @@ const DB = require("./lib/db");
 //Routes
 app.use(cors());
 patientsApi(app);
+medicinesApi(app);
 
 io.on("connect", (socket) => {
   socket.on("suscribeVitalSigns", (dataFromFrontend) => {

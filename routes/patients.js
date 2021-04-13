@@ -137,7 +137,7 @@ function patientsApi(app) {
     try {
       const data = {
         patientId: req.params.patientId,
-        doctorId: "1",
+        doctorId: 1,
         dosis: req.query.dosis,
         frequency: req.query.frequency,
         medicine_id: req.query.medicine_id,
