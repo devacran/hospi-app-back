@@ -154,6 +154,19 @@ function patientsApi(app) {
     }
   });
 
+  router.delete("/:patientId/prescriptions", async (req, res) => {
+    const reqData = {
+      patientId: req.params.patientId,
+      id: req.query.id,
+    };
+    const data = await patientsService.deletePrescription(reqData);
+    if (data) {
+      res.status(200).json({ id: data.insertId, status: "Delete OK!" });
+    } else {
+      res.status(400).json({ status: "ERROR" });
+    }
+  });
+
   app.use("/api/patients", router);
 }
 

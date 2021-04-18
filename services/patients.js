@@ -180,7 +180,8 @@ class Patients {
          b.presentation,
          a.dosis,
          a.frequency,
-         a.updated_at
+         a.via_admin,
+         a.created_at
        FROM prescriptions AS a 
        LEFT JOIN medicines AS b
        ON a.medicine_id = b.medicine_id
@@ -203,6 +204,18 @@ class Patients {
       return response;
     } catch (e) {
       console.log(e);
+    }
+  }
+
+  async deletePrescription({ patientId, id }) {
+    try {
+      await this.db.connect();
+      const data = await this.db.query(`
+      UPDATE prescriptions SET active = 0 WHERE prescription_id = ${id} AND patient_id = ${patientId} LIMIT 1;
+      `);
+      return data;
+    } catch (error) {
+      console.log(error);
     }
   }
 }
