@@ -4,7 +4,6 @@ const PatientsService = require("../services/patients");
 
 function patientsApi(app) {
   const router = express.Router();
-
   const patientsService = new PatientsService();
 
   router.get("/", async function (req, res, next) {
@@ -12,7 +11,7 @@ function patientsApi(app) {
       const patients = await patientsService.getPatients();
       res.status(200).json({ data: patients });
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   });
 
@@ -22,7 +21,7 @@ function patientsApi(app) {
       const patients = await patientsService.getPatient(patientId);
       res.status(200).json({ data: patients });
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   });
 
@@ -42,7 +41,7 @@ function patientsApi(app) {
         })
       );
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   });
 
@@ -62,7 +61,7 @@ function patientsApi(app) {
         })[0]
       );
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   });
 
@@ -102,8 +101,8 @@ function patientsApi(app) {
       glucoseLevel: req.query.glucose_level,
       temp: req.query.temp,
       heartRate: req.query.heart_rate,
-      bloodPressureS: req.query.blood_pressureS,
-      bloodPressureD: req.query.blood_pressureD,
+      bloodPressureS: req.query.blood_pressure_s,
+      bloodPressureD: req.query.blood_pressure_d,
     };
     const data = await patientsService.updateVitalSigns(reqData);
     if (data) {
