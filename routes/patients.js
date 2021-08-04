@@ -1,6 +1,8 @@
 const express = require("express");
 
 const PatientsService = require("../services/patients");
+const { reqValidator } = require("../utils/middleware/reqValidator");
+const { createVitalSignsSchema } = require("../utils/schemas/schemaPatients");
 
 function patientsApi(app) {
   const router = express.Router();
@@ -9,7 +11,10 @@ function patientsApi(app) {
   router.get("/", async function (req, res, next) {
     try {
       const patients = await patientsService.getPatients();
-      res.status(200).json({ data: patients });
+      res.status(200).json({
+        data: patients,
+        message: "patients listed",
+      });
     } catch (e) {
       next(e);
     }
@@ -19,7 +24,7 @@ function patientsApi(app) {
     try {
       const { patientId } = req.params;
       const patients = await patientsService.getPatient(patientId);
-      res.status(200).json({ data: patients });
+      res.status(200).json({ data: patients, message: "patient retrieved" });
     } catch (e) {
       next(e);
     }
@@ -65,35 +70,40 @@ function patientsApi(app) {
     }
   });
 
-  router.post("/:patientId/vital-signs", async (req, res) => {
-    const reqData = {
-      patientId: req.params.patientId,
-      glucoseLevel: req.query.glucose_level,
-      temp: req.query.temp,
-      heartRate: req.query.heart_rate,
-      bloodPressureS: req.query.blood_pressureS,
-      bloodPressureD: req.query.blood_pressureD,
-    };
-    const data = await patientsService.createVitalSigns(reqData);
-    if (data) {
-      res.status(200).json({ id: data.insertId, status: "OK" });
-    } else {
-      res.status(400).json({ status: "ERROR" });
+  router.post(
+    "/:patientId/vital-signs",
+    reqValidator(createVitalSignsSchema),
+    async (req, res, next) => {
+      try {
+        const reqData = {
+          patientId: req.params.patientId,
+          glucoseLevel: req.body.glucoseLevel,
+          temp: req.body.temp,
+          heartRate: req.body.heartRate,
+          bloodPressureS: req.body.bloodPressureS,
+          bloodPressureD: req.body.bloodPressureD,
+        };
+        const data = await patientsService.createVitalSigns(reqData);
+        res.status(200).json({ id: data.insertId, message: "OK" });
+      } catch (e) {
+        next(e);
+      }
     }
-  });
+  );
 
   router.delete("/:patientId/vital-signs", async (req, res) => {
     const reqData = {
       patientId: req.params.patientId,
       id: req.query.id,
     };
-    const data = await patientsService.deleteVitalSigns(reqData);
-    if (data) {
-      res.status(200).json({ id: data.insertId, status: "Delete OK!" });
-    } else {
-      res.status(400).json({ status: "ERROR" });
+    try {
+      const data = await patientsService.deleteVitalSigns(reqData);
+      res.status(200).json({ id: data.insertId, message: "Delete OK!" });
+    } catch (e) {
+      next(e);
     }
   });
+
   router.put("/:patientId/vital-signs", async (req, res) => {
     const reqData = {
       patientId: req.params.patientId,
@@ -104,11 +114,11 @@ function patientsApi(app) {
       bloodPressureS: req.query.blood_pressure_s,
       bloodPressureD: req.query.blood_pressure_d,
     };
-    const data = await patientsService.updateVitalSigns(reqData);
-    if (data) {
+    try {
+      const data = await patientsService.updateVitalSigns(reqData);
       res.status(200).json({ id: data.insertId, status: "Delete OK!" });
-    } else {
-      res.status(400).json({ status: "ERROR" });
+    } catch (e) {
+      next(e);
     }
   });
 
@@ -118,7 +128,7 @@ function patientsApi(app) {
       const patients = await patientsService.getPatientBill(patientId);
       res.status(200).json({ data: patients });
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   });
 
@@ -128,7 +138,7 @@ function patientsApi(app) {
       const prescriptions = await patientsService.getPrescriptions(patientId);
       res.status(200).json({ data: prescriptions });
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   });
 
@@ -143,13 +153,9 @@ function patientsApi(app) {
         via_admin: req.query.via_admin,
       };
       const response = await patientsService.addPrescription(data);
-      if (response) {
-        res.status(200).json({ id: response.insertId });
-      } else {
-        res.status(400).json({ status: "ERROR" });
-      }
+      res.status(200).json({ id: response.insertId });
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   });
 
@@ -158,11 +164,11 @@ function patientsApi(app) {
       patientId: req.params.patientId,
       id: req.query.id,
     };
-    const data = await patientsService.deletePrescription(reqData);
-    if (data) {
+    try {
+      const data = await patientsService.deletePrescription(reqData);
       res.status(200).json({ id: data.insertId, status: "Delete OK!" });
-    } else {
-      res.status(400).json({ status: "ERROR" });
+    } catch (e) {
+      next(e);
     }
   });
 
