@@ -55,16 +55,17 @@ function patientsApi(app) {
       const { patientId } = req.params;
       const data = await patientsService.getVitalSignsLast(patientId);
 
-      res.status(200).json(
-        data.map((x) => {
+      res.status(200).json({
+        data: data.map((x) => {
           const { id, patient_id, ...values } = x;
           return {
             id,
             patient_id,
             data: values,
           };
-        })[0]
-      );
+        })[0],
+        message: "Last Vital Sign Retrieved",
+      });
     } catch (e) {
       next(e);
     }
@@ -126,7 +127,9 @@ function patientsApi(app) {
     try {
       const { patientId } = req.params;
       const patients = await patientsService.getPatientBill(patientId);
-      res.status(200).json({ data: patients });
+      res
+        .status(200)
+        .json({ data: patients, message: "Bill Account Retrieved" });
     } catch (e) {
       next(e);
     }
@@ -136,7 +139,9 @@ function patientsApi(app) {
     try {
       const { patientId } = req.params;
       const prescriptions = await patientsService.getPrescriptions(patientId);
-      res.status(200).json({ data: prescriptions });
+      res
+        .status(200)
+        .json({ data: prescriptions, message: "Prescriptions retrieved" });
     } catch (e) {
       next(e);
     }
@@ -153,7 +158,7 @@ function patientsApi(app) {
         via_admin: req.query.via_admin,
       };
       const response = await patientsService.addPrescription(data);
-      res.status(200).json({ id: response.insertId });
+      res.status(200).json({ id: response.insertId, message: "Inserted OK!" });
     } catch (e) {
       next(e);
     }
@@ -166,7 +171,7 @@ function patientsApi(app) {
     };
     try {
       const data = await patientsService.deletePrescription(reqData);
-      res.status(200).json({ id: data.insertId, status: "Delete OK!" });
+      res.status(200).json({ id: data.insertId, message: "Delete OK!" });
     } catch (e) {
       next(e);
     }
