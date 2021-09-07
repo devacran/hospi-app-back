@@ -2,7 +2,10 @@ const express = require("express");
 
 const PatientsService = require("../services/patients");
 const { reqValidator } = require("../utils/middleware/reqValidator");
-const { createVitalSignsSchema } = require("../utils/schemas/schemaPatients");
+const {
+  createVitalSignsSchema,
+  updatePrescriptionSchema,
+} = require("../utils/schemas/schemaPatients");
 
 function patientsApi(app) {
   const router = express.Router();
@@ -163,6 +166,29 @@ function patientsApi(app) {
       next(e);
     }
   });
+
+  router.put(
+    "/:patientId/prescriptions",
+    reqValidator(updatePrescriptionSchema, "query"),
+    async function (req, res, next) {
+      try {
+        const data = {
+          patientId: req.params.patientId,
+          prescriptionId: req.query.prescriptionId,
+          doctorId: 1,
+          dosis: req.query.dosis,
+          frequency: req.query.frequency,
+          via_admin: req.query.via_admin,
+        };
+        const response = await patientsService.updatePrescription(data);
+        res
+          .status(200)
+          .json({ id: req.query.prescriptionId, message: "Updated OK!" });
+      } catch (e) {
+        next(e);
+      }
+    }
+  );
 
   router.delete("/:patientId/prescriptions", async (req, res) => {
     const reqData = {

@@ -163,6 +163,25 @@ class Patients {
     return response;
   }
 
+  async updatePrescription(data) {
+    const { dosis, via_admin, frequency, patientId, prescriptionId } = data;
+    await this.db.connect();
+
+    const response = await this.db.query(`
+       UPDATE prescriptions SET 
+        dosis = ${dosis},
+        via_admin = ${via_admin}, 
+        frequency = ${frequency}
+        WHERE
+        patient_id = ${patientId}
+        AND
+        prescription_id = ${prescriptionId}
+        LIMIT 1
+      `);
+
+    return response;
+  }
+
   async deletePrescription({ patientId, id }) {
     await this.db.connect();
     const data = await this.db.query(`
