@@ -164,18 +164,18 @@ class Patients {
   }
 
   async updatePrescription(data) {
-    const { dosis, via_admin, frequency, patientId, prescriptionId } = data;
+    const { dosis, via_admin, frequency, patientId, prescription_id } = data;
     await this.db.connect();
 
     const response = await this.db.query(`
        UPDATE prescriptions SET 
-        dosis = ${dosis},
-        via_admin = ${via_admin}, 
-        frequency = ${frequency}
+        dosis = "${dosis}",
+        via_admin = "${via_admin}", 
+        frequency = "${frequency}"
         WHERE
         patient_id = ${patientId}
         AND
-        prescription_id = ${prescriptionId}
+        prescription_id = ${prescription_id}
         LIMIT 1
       `);
 

@@ -174,16 +174,16 @@ function patientsApi(app) {
       try {
         const data = {
           patientId: req.params.patientId,
-          prescriptionId: req.query.prescriptionId,
+          prescription_id: req.query.prescription_id,
           doctorId: 1,
           dosis: req.query.dosis,
           frequency: req.query.frequency,
           via_admin: req.query.via_admin,
         };
-        const response = await patientsService.updatePrescription(data);
+        await patientsService.updatePrescription(data);
         res
           .status(200)
-          .json({ id: req.query.prescriptionId, message: "Updated OK!" });
+          .json({ id: req.query.prescription_id, message: "Updated OK!" });
       } catch (e) {
         next(e);
       }

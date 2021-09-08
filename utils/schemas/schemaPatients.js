@@ -8,7 +8,7 @@ const createVitalSignsSchema = Joi.object({
   bloodPressureD: Joi.number().min(1).max(1000).required(),
 });
 const updatePrescriptionSchema = Joi.object({
-  prescriptionId: Joi.number().required(),
+  prescription_id: Joi.number().required(),
   dosis: Joi.string().min(1).max(30),
   frequency: Joi.string().min(1).max(30),
   via_admin: Joi.string().min(1).max(30),
