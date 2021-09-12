@@ -28,6 +28,56 @@ class Patients {
     return patient[0] || {};
   }
 
+  async createPatient({
+    doctorId,
+    name,
+    lastName,
+    birthdate,
+    address,
+    gender,
+    weight,
+    height,
+    allergies,
+    bloodType,
+    nss,
+    insuranceNumber,
+    telephone,
+    photoUrl,
+  }) {
+    await this.db.connect();
+    const patient = await this.db.query(`
+      INSERT INTO patients
+              (doctor_id,
+              name,
+              last_name,
+              birdthdate,
+              gender,
+              weight,
+              height,
+              allergies,
+              blood_type,
+              nss,
+              insurance_number,
+              phone,
+              user_photo)
+      VALUES  (${doctorId},
+              '${name}',
+              '${lastName}',
+              STR_TO_DATE(${birthdate},'%d,%m,%Y'),
+              '${gender}',
+              ${weight},
+              ${height},
+              '${allergies}',
+              '${bloodType}',
+              ${nss},
+              ${insuranceNumber},
+              ${telephone},
+              '${photoUrl}') 
+    `);
+
+    return patient;
+  }
+
   async getVitalSigns(id) {
     await this.db.connect();
     const vitalSigns = await this.db.query(

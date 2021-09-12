@@ -5,6 +5,7 @@ const { reqValidator } = require("../utils/middleware/reqValidator");
 const {
   createVitalSignsSchema,
   updatePrescriptionSchema,
+  createPatientSchema,
 } = require("../utils/schemas/schemaPatients");
 
 function patientsApi(app) {
@@ -22,6 +23,35 @@ function patientsApi(app) {
       next(e);
     }
   });
+
+  router.post(
+    "/",
+    reqValidator(createPatientSchema, "query"),
+    async function (req, res, next) {
+      try {
+        const params = {
+          doctorId: "1",
+          name: req.query.name,
+          lastName: req.query.lastName,
+          birthdate: new Date(req.query.birthdate).toLocaleDateString(),
+          address: req.query.address,
+          gender: req.query.gender,
+          weight: req.query.weight,
+          height: req.query.height,
+          allergies: req.query.allergies,
+          bloodType: req.query.bloodType,
+          nss: req.query.nss,
+          insuranceNumber: req.query.insuranceNumber,
+          telephone: req.query.telephone,
+          photoUrl: req.query.photoUrl,
+        };
+        const data = await patientsService.createPatient(params);
+        res.status(200).json({ id: data.insertId, message: "OK" });
+      } catch (e) {
+        next(e);
+      }
+    }
+  );
 
   router.get("/:patientId", async function (req, res, next) {
     try {
