@@ -7,7 +7,7 @@ class Patients {
   async getPatients() {
     await this.db.connect();
     const patients = await this.db.query(
-      "SELECT patient_id as id, nss, name, last_name,type,room FROM patients LIMIT 30"
+      "SELECT patient_id as id, nss, name, last_name,type,room FROM patients ORDER BY created_at DESC LIMIT 30"
     );
     return patients;
   }
